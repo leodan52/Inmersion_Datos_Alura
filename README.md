@@ -1,8 +1,8 @@
 # Inmersion_Datos_Alura
 
-La Inmersión de Datos de Alura es un evento que organiza [Alura Latam](https://www.aluracursos.com/) como entrenamiento para Data Science. Durante 5 días se liberarán clases diarias que explicarán de forma intensiva como realizar análisis de datos con Python usando [Pandas](https://pandas.pydata.org/) y otros frameworks, como [Matplotlib](https://matplotlib.org/stable/index.html) y [Seaborn](https://seaborn.pydata.org/), para la visualización. Todo el proceso del la Inmersión se registrará en el archivo [Inmersion_de_datos.ipynb](Inmersion_de_datos.ipynb).
+La Inmersión en Datos de Alura es un evento que organiza [Alura Latam](https://www.aluracursos.com/) como entrenamiento para Data Science. Durante 5 días se liberarán clases diarias que explicarán de forma intensiva como realizar análisis de datos con Python usando [Pandas](https://pandas.pydata.org/) y otros frameworks, como [Matplotlib](https://matplotlib.org/stable/index.html) y [Seaborn](https://seaborn.pydata.org/), para la visualización. Todo el proceso del la Inmersión se registrará en el archivo [Inmersion_de_datos.ipynb](Inmersion_de_datos.ipynb).
 
-La Inmersión de Datos también consta de varios desafíos diarios para los participantes, y en este README llevaré a cabo la resolución de estos. Cada días se libera un Aura numerada del 1 al 5, y aquí se mostrarán las resoluciones de sendos desafíos. En mi caso, La Inmersión de Datos durará desde el 12 al 15 de septiembre del 2023.
+La Inmersión en Datos también consta de varios desafíos diarios para los participantes, y en este README llevaré a cabo la resolución de estos. Cada días se libera un Aura numerada del 1 al 5, y aquí se mostrarán las resoluciones de sendos desafíos. En mi caso, La Inmersión en Datos durará desde el 12 al 15 de septiembre del 2023.
 
 ## ¿De qué trata la base de datos?
 
