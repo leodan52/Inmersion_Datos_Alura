@@ -220,7 +220,7 @@ plt.show()
 
 ![imagen](img/valor_inmueble_top3.png)
 
-Lo que tenemos en el gráfico es la distribución de los valores de los tres tipos de inmueble entre 50 7 2000 millones COP. Como se puede observar, la cantidad de Apartamentos en oferta domina en general a los otros dos tipos, tanto que es difícil observalos. Hagamos un par de zomm in para apreciarlos de mejor manera.
+Lo que tenemos en el gráfico es la distribución de los valores de los tres tipos de inmueble entre 50 7 2000 millones COP. Como se puede observar, la cantidad de Apartamentos en oferta domina en general a los otros dos tipos, tanto que es difícil observarlos. Hagamos un par de zoom in para apreciarlos de mejor manera.
 
 ```python
 plt.figure(figsize = (12,8))
@@ -258,7 +258,7 @@ plt.show()
 #### Análisis
 
 De estos gráficos se pueden llegar a una serie de conclusiones:
-1. La oferta de departamentos de bajo costo es bastante alta. Quizás haya habido algún proyecto inmobiliario destinado a las viviendas multifamiliares.
+1. La oferta de departamentos de bajo costo es bastante alta. Quizás haya habido algún proyecto inmobiliario destinado a las viviendas multi-familiares.
 2. La oferta tanto de departamentos como de casas tiene un comportamiento bastante suave entre 50 y 1000 millones COP, después de eso hay "baches" en algunos precios. Esto podría se indicativo de la capacidad económica de los habitantes de Bogotá.
 3. Las Oficinas y consultorios, aunque son el top 3, la diferencia es bastante marcada con el top 2. La grafica no es en absoluto suave, y no presenta un comportamiento predecible. Tiene sentido, ya que es un mercado muy de nicho.
 
@@ -328,4 +328,115 @@ Como podemos observar, el top 10 de precio por $m^2$ difiere mucho del top 10 de
 
 Es bastante notorio el caso de La Merced, que ocupa el top 3, donde también tiene la desviación estándar menor. Esto indica que los costos por $m^2$ en ese barrio son bastante estables.
 
-## Aula 03:
+## Aula 03: Profundizando el análisis exploratorio e insights
+**Desafíos**
+
+1. Dar un vistazo a la base de datos del DANE, entender estas variables, conceptualmente para entender mejor el contexto de esta base.
+2. Organizar tu notebook para tu proyecto quede mejor presentado
+
+### Desafío 1
+
+En esta ocasión los desafíos son más teóricos que las clases pasadas, por lo tanto el código que se puede escribir será mínimo. Por lo tanto, a modo de solución, escribiré en esta sección un resumen de la investigación de los archivos CSV que usaremos en la siguiente clase.
+
+Los datos del DANE se obtuvieron de su [página web](https://microdatos.dane.gov.co/index.php/catalog/743), y los archivos CSV descargados el 13 de septiembre del 2023 se encuentran en el directorio [datos_varios_colombia/](datos_varios_colombia/). La investigación de estos archivos se realiza con la [documentación](datos_varios_colombia/ddi-documentation-spanish-743.pdf) que dispone también el DANE.
+
+#### Identificación (Capítulo A)
+
+Esta archivo se guardó en la variable `datos_raw` durante la clase, para después hacer un filtro que permitiera quedarnos solo con los datos de Bogotá —municipio con indicador 11001. Esta archivo **contiene datos de identificación de la vivienda**, como Departamento, municipio, clase, etcétera; en total posee 11 columnas.
+
+Las columnas, y su abreviatura usada en el archivo, se resume en la siguiente tabla
+
+![f1.3](docs/assets/f1-3.png)
+
+En la columna **NOMBRE** se muestra el nombre que tendrá la columna o campo en el archivo, en **ETIQUETA** la descripción y formato en el que se mostrará la información, y en **PREGUNTA** la pregunta que se realizó al encuestado.
+
+Esta tabla es la básica al tratar con un modelo predictivo, ya que nos brinda información de la zona y el tipo del inmueble al que se refiere, lo que es crucial a la hora de asignar un valor a la propiedad.
+
+#### Datos de la vivienda y su entorno (Capítulo B)
+
+En este caso, se creó un dataframe con este archivo llamado `datos_b` durante la clase. Esta contiene **los datos propios de la vivienda, así como de su entorno**. Por ejemplo, las vías de acceso, iluminación, condiciones estructurales, posibles problemas ambientales, etcétera. Este archivo posee 63 campos.
+
+La explicación del los datos se expone en el siguiente fragmento
+
+![f2.3](docs/assets/f2-3.png)
+
+Los campos constan del **DIRECTORIO** así como de varios más cuyo nombre clave comienza con **NVCBP** y el factor de expansión (**FEX_X**). Las columnas NVCBP constan de la información dada por los encuestados sobre el estado de su viviendo y su entorno, como se muestra en la tabla. Los datos de estos campos son numéricos discretos, comenzando desde 1, enumerando dos o varias respuestas posibles a las preguntas.
+
+Un posible abordaje de los datos mostrados en este dataset sería generalizar los datos a zonas más amplias como las UPZ o las localidades, haciendo uso del archivo anterior, y dar con un estado general de las viviendas en vecindades.
+
+#### Condiciones habitacionales del hogar (Capítulo C)
+
+Este archivo se guardó en la variable `datos_c`. Posee información del **estado administrativo de la vivienda**. Por ejemplo, si es propia o arrendada, los gastos por habitar la vivienda, la financiación de los hogares para comprar la vivienda, la calidad de los espacios, etcétera. Este archivo consta de 142 columnas.
+
+![f3.3](docs/assets/f3-3.png)
+
+En este caso, la tabla consta de datos de identificación, y los resultados de la encuentras con campos que comienzan con **NHCCP**. Estos datos son numéricos, contando con datos discretos con un conjunto de respuestas disponibles, así como con continuos para respuestas más específicas que involucren cantidades.
+
+En este dataframe se podría obtener información sobre el costo de vida que la vivienda exige para su mantenimiento, lo que influye en su costo de venta.
+
+#### Composición del hogar y demografía (Capítulo E)
+
+Guardado en la variable `datos_e`, este dataset habla de la **composición del hogar y la demografía**. Datos como el tamaño, distribución y dinámica demográfica de la población, sus características demográficas, integrantes del hogar y el núcleo familiar, etcétera. Este archivo consta con 68 campos.
+
+![f4.3](docs/assets/f4-3.png)
+
+Además de los datos de identificación, tenemos también los datos que se obtienen de la encuesta, en este caso comenzando por **NPCEP**, así como un par de datos que se salen de este patrón como **ORDEN** y **SEXO** del encuestado. Por lo demás, el formato sigue siendo dado por datos numéricos discretos y continuos, para respuestas definidas o específicas, respectivamente.
+
+Los datos contenidos en este archivo poseen datos referentes más a los residentes del hogar, lejos de la vivienda. Quizás sean útiles para entender la dinámica de los posibles vecinos al adquirir un hogar, lo que impacta al mercado inmobiliario de una forma u otra.
+
+
+#### Educación (Capítulo H)
+
+Se guarda en la variable llamada `datos_h`. Como su nombre lo indica **recopila datos educativos de la población**, desde los 5 años en adelante. Parámetros como el analfabetismo, niveles educativos y años de estudio, así como las razones del ausentismo escolar y los datos de transporte y económicos relacionados con la asistencia a los centros de estudio. Este archivo consta de 136 campos.
+
+![f5.3](docs/assets/f5-3.png)
+
+Los tipos de campos no difieren mucho de los archivos anteriores. Se cuenta con los campos de identificación, así como los resultados de la encuesta, esta vez identificada con el prefijo **NPCHP** con datos numéricos discretos para un número fijo de respuestas posibles, y datos numéricos continuos para respuestas que requieran cantidades específicas.
+
+No es extraño que el ambiente escolar sea un tema importante al adquirir una vivienda, especialmente a hogares que cuentan con menores de edad. La accesibilidad a los centro educativos, así como la calidad de estos influyen en los costos de los inmuebles, ya sean residenciales o los locales para negocios que dependan de la actividad educativa, como la venta de útiles escolares.
+
+
+#### Fuerza de trabajo (Capítulo K)
+
+Guardado en la variable `datos_k`, esta contiene **los datos laborales y de actividad económica de la población**. Recopila datos como el origen de los ingresos de las personas dentro del hogar, ya sean adquiridos mediante el mercado laboral o de otras fuentes, así los datos de desempleo. Este archivo cuenta con 170 campos.
+
+![f6-3](docs/assets/f6-3.png)
+
+En este caso los campos que contienen las respuestas de la encuesta comienzan con **NPCKP**, y siguen siendo datos numéricos discretos o continuos, así como los campos de identificación.
+
+La información de la fuerza de trabajo es importante, ya que la accesibilidad a los centros de trabajo influye a aquellas personas que deseen adquirir una vivienda, así como a empresas que deseen contratar a empleados que vivan cerca de las instalaciones.
+
+#### Percepción sobre las condiciones de vida y el desempeño institucional (Capítulo L)
+
+Este dataset se guarda en la variable `datos_l`, y guarda datos sobre la **percepción de la población sobre la calidad de vida en los alrededores de su vivienda**. Datos sobre las victimas de actividades delictivas, así como la calidad de las instalaciones urbanas y grupos vulnerables, entre otras cosas, se recopilan en este archivo. Contiene 179 campos.
+
+![f7.3](docs/assets/f7-3.png)
+
+En este caso, los campos que contienen los resultados de la encuesta se identifican porque comienzan con **NHCLP**, y constan de datos numéricos discretos y continuos, aunque en su gran mayoría sean discretos con posibles respuestas definidas.
+
+No cabe duda que el nivel de criminalidad impacta la calidad de vida de las personas en una zona, y la calidad de vida es fundamental cuando hogares o empresas buscan asentarse en un lugar. Por ende, el mercado inmobiliario se verá afectado.
+
+#### Conclusiones de la actividad
+
+Estos archivos son los seleccionados por los instructores de la **Inmersión en Datos de Alura**, que serán útiles en la actividad de la Aula 04 en la que se creará un modelo predictivo para el valor de las propiedades.
+
+No me cabe duda que se realizó un buen trabajo en esta selección, ya que las condiciones del barrio, de la vivienda, el nivel educativo de la zona, las oportunidades de empleo y la percepción de la criminalidad, entre otras, son variables muy importantes para valuar un inmueble de manera más precisa.
+
+Debe haber un equilibrio entre el atractivo de la vivienda, teniendo en cuenta el entorno y los servicios estatales ofrecidos, y el impacto económico de esta. Por ejemplo, si el barrio no es muy atractivo, el precio podría ser suficientemente bajo para compensarlo y cerrar la compra.
+
+### Desafío 1
+
+A lo largo de los días anteriores, me he esforzado para mantener organizado mi [notebook](Inmersion_de_datos.ipynb) dividiendo en secciones y subsecciones para encontrar de forma más rápida y cómoda los detalles que se requieran repasar. Además, he puesto bloques de texto explicando lo que se está realizando en ese momento.
+
+El contenido de las cuatro aulas está contenida dentro del mismo notebook, y divididas por secciones. Dentro de cada sección se abren subsecciones cuando se introduce un nuevo concepto, se realiza un análisis específico, se crean gráficos y se definen los desafíos.
+
+Elegí esta organización para aprovechar las importaciones y las variables que se han hecho en aulas anteriores. Sin embargo, esto también significa sacrificar la eficiencia de los códigos. Después de alrededor de 382 bloques de código, se dejan variables que ya no se usan y ocupan espacio en la memoria virtual.
+
+Por eso, para este desafío voy a agregar una subsección al final de cada sección donde se eliminarán variables que ya no se usarán en el futuro. Para lograr esto usaré la función `dir()` de Python sin argumentos, que devuelve una lista que contiene los nombres de las variables dentro de scope global.
+
+```python
+dir()
+```
+![f8.3](docs/assets/f8-3.png)
+
+De esta forma podré localizar de forma más rápida aquellas variables que no usaré después, y borrarlas usando `del`.
