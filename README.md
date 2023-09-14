@@ -2,16 +2,16 @@
 
 ## Índice
 * [Introducción](#introducción)
-    * [¿De qué trata la base de datos?](#¿de-qué-trata-la-base-de-datos)
+    * [¿De qué trata la base de datos?](#de-qué-trata-la-base-de-datos)
 * [Aura 01](#aura-01-tu-primer-colab-con-python-y-pandas)
     * [Desafío 1](#desafío-1)
     * [Desafío 2](#desafío-2)
 * [Aula 02](#aula-02-tratamiento-de-datos-y-primeras-gráficas)
-    * [Desafío 1](#desafc3ado-1-1)
-    * [Desafío 2](#desafc3ado-2-1)
+    * [Desafío 1](#desafío-1-1)
+    * [Desafío 2](#desafío-2-1)
 * [Aula 03](#aula-03-profundizando-el-análisis-exploratorio-e-insights)
-    * [Desafío 1](#desafc3ado-1-2)
-    * [Desafío 2](#desafc3ado-2-2)
+    * [Desafío 1](#desafío-1-2)
+    * [Desafío 2](#desafío-2-2)
 
 ## Introducción
 
