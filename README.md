@@ -1,10 +1,25 @@
 # Inmersion_Datos_Alura
 
+## Índice
+* [Introducción](#introducción)
+    * [¿De qué trata la base de datos?](#¿de-qué-trata-la-base-de-datos)
+* [Aura 01](#aura-01-tu-primer-colab-con-python-y-pandas)
+    * [Desafío 1](#desafío-1)
+    * [Desafío 2](#desafío-2)
+* [Aula 02](#aula-02-tratamiento-de-datos-y-primeras-gráficas)
+    * [Desafío 1](#desafc3ado-1-1)
+    * [Desafío 2](#desafc3ado-2-1)
+* [Aula 03](#aula-03-profundizando-el-análisis-exploratorio-e-insights)
+    * [Desafío 1](#desafc3ado-1-2)
+    * [Desafío 2](#desafc3ado-2-2)
+
+## Introducción
+
 La Inmersión en Datos de Alura es un evento que organiza [Alura Latam](https://www.aluracursos.com/) como entrenamiento para Data Science. Durante 5 días se liberarán clases diarias que explicarán de forma intensiva como realizar análisis de datos con Python usando [Pandas](https://pandas.pydata.org/) y otros frameworks, como [Matplotlib](https://matplotlib.org/stable/index.html) y [Seaborn](https://seaborn.pydata.org/), para la visualización. Todo el proceso del la Inmersión se registrará en el archivo [Inmersion_de_datos.ipynb](Inmersion_de_datos.ipynb).
 
 La Inmersión en Datos también consta de varios desafíos diarios para los participantes, y en este README llevaré a cabo la resolución de estos. Cada días se libera un Aura numerada del 1 al 5, y aquí se mostrarán las resoluciones de sendos desafíos. En mi caso, La Inmersión en Datos durará desde el 12 al 15 de septiembre del 2023.
 
-## ¿De qué trata la base de datos?
+### ¿De qué trata la base de datos?
 
 La base de datos está dada por el archivo CSV [inmuebles_bogota.csv](inmuebles_bogota.csv) que resume los inmuebles en venta de la ciudad de Bogotá. El dataframe es el siguiente
 
@@ -424,7 +439,7 @@ No me cabe duda que se realizó un buen trabajo en esta selección, ya que las c
 
 Debe haber un equilibrio entre el atractivo de la vivienda, teniendo en cuenta el entorno y los servicios estatales ofrecidos, y el impacto económico de esta. Por ejemplo, si el barrio no es muy atractivo, el precio podría ser suficientemente bajo para compensarlo y cerrar la compra.
 
-### Desafío 1
+### Desafío 2
 
 A lo largo de los días anteriores, me he esforzado para mantener organizado mi [notebook](Inmersion_de_datos.ipynb) dividiendo en secciones y subsecciones para encontrar de forma más rápida y cómoda los detalles que se requieran repasar. Además, he puesto bloques de texto explicando lo que se está realizando en ese momento.
 
