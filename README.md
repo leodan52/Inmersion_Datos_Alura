@@ -12,12 +12,18 @@
 * [Aula 03](#aula-03-profundizando-el-análisis-exploratorio-e-insights)
     * [Desafío 1](#desafío-1-2)
     * [Desafío 2](#desafío-2-2)
+* [Aula 04](#aula-04-cruzando-bases-y-machine-learning)
+    * [Marco teórico](#marco-teórico)
+    * [Desafío 1](#desafío-1-3)
+    * [Desafío 2](#desafío-2-3)
 
 ## Introducción
 
-La Inmersión en Datos de Alura es un evento que organiza [Alura Latam](https://www.aluracursos.com/) como entrenamiento para Data Science. Durante 5 días se liberarán clases diarias que explicarán de forma intensiva como realizar análisis de datos con Python usando [Pandas](https://pandas.pydata.org/) y otros frameworks, como [Matplotlib](https://matplotlib.org/stable/index.html) y [Seaborn](https://seaborn.pydata.org/), para la visualización. Todo el proceso del la Inmersión se registrará en el archivo [Inmersion_de_datos.ipynb](Inmersion_de_datos.ipynb).
+La Inmersión en Datos de Alura es un evento que organiza [Alura Latam](https://www.aluracursos.com/) como entrenamiento para Data Science. Durante 4 días se liberarán clases diarias que explicarán de forma intensiva como realizar análisis de datos con Python usando [Pandas](https://pandas.pydata.org/) y otros frameworks, como [Matplotlib](https://matplotlib.org/stable/index.html) y [Seaborn](https://seaborn.pydata.org/), para la visualización. Todo el proceso del la Inmersión se registrará en el archivo [Inmersion_de_datos.ipynb](Inmersion_de_datos.ipynb).
 
-La Inmersión en Datos también consta de varios desafíos diarios para los participantes, y en este README llevaré a cabo la resolución de estos. Cada días se libera un Aura numerada del 1 al 5, y aquí se mostrarán las resoluciones de sendos desafíos. En mi caso, La Inmersión en Datos durará desde el 12 al 15 de septiembre del 2023.
+La Inmersión en Datos también consta de varios desafíos diarios para los participantes, y en este README llevaré a cabo la resolución de estos. Cada días se libera un Aura numerada del 1 al 4, y aquí se mostrarán las resoluciones de sendos desafíos. En mi caso, La Inmersión en Datos durará desde el 12 al 14 de septiembre del 2023.
+
+La finalidad del programa es crear un modelo de predicción para determinar el valor de un inmueble usando una gran variedad de parámetros, y apoyándose en la librería de Machine Learning [scikit-learn](https://scikit-learn.org/stable/). Este modelo se desarrollarán en la Aula 04.
 
 ### ¿De qué trata la base de datos?
 
@@ -214,8 +220,8 @@ tipo_sel = ['Apartamento', 'Casa', 'Oficina/Consultorio']
 Luego, creamos el gráfico, modificando algunos detalles visuales para darle una mejor presentación.
 
 ```python
-plt.figure(figsize = (12,8)) # Creamos lienzo y ajustamos tamanio
-sns.set_theme(font_scale = 1.5) # Ajustamos el tamanio de la fuente
+plt.figure(figsize = (12,8)) # Creamos lienzo y ajustamos tamaño
+sns.set_theme(font_scale = 1.5) # Ajustamos el tamaño de la fuente
 
 grafica = sns.histplot(data = inmuebles_simpl, x = 'Precio_Millon',
                        kde = True,
@@ -291,7 +297,7 @@ inmuebles.sample(10)
 
 Donde la nueva columna `Precio_por_1m2` nos dice el costo en millones de COP por cada $m^2$.
 
-#### Grafica
+#### Gráfica
 
 Para la gráfica opté por usar `barplot` para graficar los promedios del valor por $m^2$ de cada barrio. Comenzamos obteniendo los promedios,
 
@@ -455,3 +461,385 @@ dir()
 ![f8.3](docs/assets/f8-3.png)
 
 De esta forma podré localizar de forma más rápida aquellas variables que no usaré después, y borrarlas usando `del`.
+
+## Aula 04: Cruzando bases y Machine Learning
+
+**Desafíos**
+
+1. Probar con otros modelos de ML;
+2. Trabajar más con los datos y crear nuevas variables;
+3. Probar predicciones para casos reales;
+4. Crear un proyecto con los resultados de la inmersión y publicarlo en las redes sociales mostrando el trabajo realizado. Recuerda etiquetar a @aluralatam y utilizar los hashtags #InmersionDatos e #InmersionDatosAluraLatam.
+
+### Marco teórico
+
+La teoría detrás del Machine Learning es muy extensa. Es tal que un estudio completo de los modelos de *Deep Learning* nos llevaría varios párrafos y muchas matemáticas para entenderlos en su totalidad. Sin embargo, no es necesario al usar el módulo [scikit-learn](https://scikit-learn.org/stable/), que hace todo el trabajo tedioso por nosotros.
+
+No obstante, para poder analizar y comprender los resultados que obtenemos para el modelaje, si requerimos uno qué otro conocimiento. Por lo pronto, comencemos con algunas definiciones que usaremos en los desafíos.
+
+Primero vamos a definir una función para facilitar el uso de la librería sklearn
+
+```python
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, r2_score
+from sklearn.model_selection import train_test_split
+
+def modelar(p_entrenamiento, target_entrenamiento, tamano_test = 0.25, semilla = 99, imprimir_mensaje = True):
+  X = datos_ml[p_entrenamiento]
+  y = datos_ml[target_entrenamiento]
+
+  # Split
+  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = tamano_test, random_state = semilla)
+
+  # Modelo
+  modelo_1 = LinearRegression()
+  modelo_1.fit(X_train, y_train)
+
+  # Predicción
+  y_predict_test = modelo_1.predict(X_test)
+
+  y_predict_train = modelo_1.predict(X_train)
+
+  # Validación
+  mae_test = mean_absolute_error(y_test, y_predict_test)
+  r2_test = r2_score(y_test, y_predict_test)
+
+  mae_train = mean_absolute_error(y_train, y_predict_train)
+  r2_train = r2_score(y_train, y_predict_train)
+
+  if imprimir_mensaje:
+    print('Validación con los datos de testeo')
+    print(f'\tEl error absoluto medio fue de {mae_test}')
+    print(f'\tEl Coeficiente de determinación (R^2) fue de {r2_test}')
+    print('Validación con los datos de entrenamiento')
+    print(f'\tEl error absoluto medio fue de {mae_train}')
+    print(f'\tEl Coeficiente de determinación (R^2) fue de {r2_train}')
+
+  salida = {'modelo' : modelo_1,
+            'mae_test' : mae_test,
+            'r2_test' : r2_test,
+            'mae_train' : mae_train,
+            'r2_train' : r2_train}
+
+  return salida
+```
+
+La función `modelar` tiene como parámetros lo siguiente
+* `p_entrenamiento` : El conjunto de campos/parámetros que se usarán para el entrenamiento y
+* `target_entrenamiento` : El campo objetivo de entrenamiento,
+
+este último campo será el objetivo que se desea predecir. Además también se definen un par de parámetros con valores predeterminados, `tamano_test` y `semilla`, para modificar, si es necesario, el tamaño de la muestra para el test, o el SEED. Además, un parámetro `imprimir_mensaje` para poder modificar si queremos salida en pantalla o no.
+
+La salida de la función será un diccionario que contendrá el modelo y las mediciones de validación.
+
+El modelo que se usará, por el momento, es [`LinearRegression`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html), que se encuentra en el sub-módulo `linear_model` de `sklearn`; este modelo se sustituirá más adelante para cumplir con el primer desafío. Además, se usará como auxiliar la función `train_test_split` del sub-módulo `model_selection` para obtener la muestra para la validación.
+
+Por otra parte, para realizar la validación, nos respaldaremos con las funciones `mean_absolute_error` y `r2_score`, del sub-módulo `metrics`, también de `sklearn`. Estas funciones calculan el *Error absoluto medio* y el *Coeficiente de determinación*, que son medidas estadísticas. Pero, ¿qué significan estas medias exactamente? Las vamos a definir.
+
+#### Error absoluto medio
+Fuente: [Wikipedia](https://en.wikipedia.org/wiki/Mean_absolute_error)
+
+El **Error absoluto medio**, o $MAE$ por sus siglas en inglés, es una medida estadística del error entre dos pares de observaciones del mismo fenómeno. Es decir, sin comparamos los conjuntos $X$ y $Y$, que podrían ser datos de predicciones y datos de observación, por decir un ejemplo, el MAE se calcula como
+
+$$MAE = \frac{1}{n}\sum_{i = 1}^{n} |x_i - y_i| = \frac{1}{n}\sum_{i = 1}^{n} |e_i|, $$
+
+con $n$ el número de los datos y $e_i = x_i - y_i$ es el error absoluto del par de datos $i$-ésimos de los conjuntos. Se podría decir que el $MAE$ es el *promedio de los errores absolutos*, donde las $x$ son los valores de predicción y las $y$ los valores reales.
+
+#### Coeficiente de determinación
+
+Fuentes: [Wikipeda](https://en.wikipedia.org/wiki/Coefficient_of_determination) y [documentación de `r2_score`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.r2_score.html#sklearn.metrics.r2_score)
+
+El Coeficiente de determinación, denotado como $R^2$, es una medida estadística que determina la calidad del modelo estadístico para replicar los resultados, es decir, la predicción. $R^2$ puede tomar valores entre 0 y 1, donde 0 indica una *predicción imperfecta*, y 1 una *predicción perfecta*.
+
+El cálculo de $R^2$ no es trivial, por lo que se omitirá.
+
+#### ¿Qué se hizo en clase?
+
+El Aula 04 fue la más pesada de la Inmersión en Datos. No suelo dar muchos detalles en este README de lo que se hizo en clase, pero dada las circunstancias, les daré un breve resumen:
+
+1. Los instructores, después de estudiar los datos del DANE vistos en el aula anterior, seleccionaron algunos parámetros o campos y guardaron el *dataframe* en el archivo [datos_dane.csv](datos_varios_colombia/datos_dane.csv) y se guardó en la variable `datos_ml`.
+
+    El *dataframe* consta de 9857 registros con 55 campos.
+
+2. Renombraron los campos por nombres más descriptivos:
+
+    ```python
+    dic_dane = {
+        'NVCBP4':'CONJUNTO_CERRADO',
+        'NVCBP14A':'FABRICAS_CERCA', 'NVCBP14D':'TERMINALES_BUS', 'NVCBP14E':'BARES_DISCO',
+        'NVCBP14G':'OSCURO_PELIGROSO', 'NVCBP15A':'RUIDO', 'NVCBP15C':'INSEGURIDAD',
+        'NVCBP15F':'BASURA_INADECUADA', 'NVCBP15G':'INVASION','NVCBP16A3':'MOV_ADULTOS_MAYORES',
+        'NVCBP16A4':'MOV_NINOS_BEBES',
+        'NPCKP17':'OCUPACION','NPCKP18':'CONTRATO','NPCKP23':'SALARIO_MES',
+        'NPCKP44A':'DONDE_TRABAJA', 'NPCKPN62A':'DECLARACION_RENTA',
+        'NPCKPN62B':'VALOR_DECLARACION', 'NPCKP64A':'PERDIDA_TRABAJO_C19',
+        'NPCKP64E':'PERDIDA_INGRESOS_C19',
+        'NHCCP3':'TIENE_ESCRITURA', 'NHCCP6':'ANO_COMPRA', 'NHCCP7':'VALOR_COMPRA', 'NHCCP8_1':'HIPOTECA_CRED_BANCO',
+        'NHCCP8_2':'OTRO_CRED_BANCO', 'NHCCP8_3':'CRED_FNA', 'NHCCP8_6':'PRESTAMOS_AMIGOS',
+        'NHCCP8_7':'CESANTIAS', 'NHCCP8_8':'AHORROS', 'NHCCP8_9':'SUBSIDIOS',
+        'NHCCP9':'CUANTO_PAGARIA_MENSUAL', 'NHCCP11':'PLANES_ADQUIRIR_VIVIENDA',
+        'NHCCP11A':'MOTIVO_COMPRA', 'NHCCP12':'RAZON_NO_ADQ_VIV', 'NHCCP41':'TIENE_CARRO','NHCCP41A':'CUANTOS_CARROS',
+        'NHCCP47A':'TIENE_PERROS', 'NHCCP47B':'TIENE_GATOS', 'NHCLP2A':'VICTIMA_ATRACO', 'NHCLP2B':'VICTIMA_HOMICIDIO',
+        'NHCLP2C':'VICTIMA_PERSECUSION',
+        'NHCLP2E':'VICTIMA_ACOSO', 'NHCLP4':'COMO_VIVE_ECON', 'NHCLP5':'COMO_NIVEL_VIDA',
+        'NHCLP8AB':'REACCION_OPORTUNA_POLICIA', 'NHCLP8AE':'COMO_TRANSPORTE_URBANO', 'NHCLP10':'SON_INGRESOS_SUFICIENTES',
+        'NHCLP11':'SE_CONSIDERA_POBRE', 'NHCLP29_1A':'MED_C19_TRABAJO',
+        'NHCLP29_1C':'MED_C19_CAMBIO_VIVIENDA', 'NHCLP29_1E':'MED_C19_ENDEUDAMIENTO',
+        'NHCLP29_1F':'MED_C19_VENTA_BIENES','NPCHP4':'NIVEL_EDUCATIVO'
+        }
+
+    datos_dane = datos_dane.rename(columns = dic_dane)
+    datos_dane.columns
+    ```
+
+3. Remplazaron los nombres descriptivos de las UPZ por su código numérico asignado por el gobierno Colombiano. Usaron el archivo [cod_upz.csv](datos_varios_colombia/cod_upz.csv) que posee las correspondencias.
+
+4. Fueron quitaron los *outliers* hasta llegar a que `Precio_Millon` fuera mayor a 1200 millones de COP o menor a 60 millones, hasta llegar
+    ```python
+    datos_ml = datos_ml.query('Precio_Millon <= 1200 & Precio_Millon >= 60')
+    ```
+
+5. Crearon un mapa de calor para mirar las correlaciones, para después realizar varios experimentos con varios modelos variando los parámetros de entrenamiento cada vez.
+
+### Desafío 2
+
+La resolución de los desafíos 1, 2 y 3 no las realizaré en ese orden. Lo primero que realizaré serán pruebas para determinar la calidad de la predicción usando diversos parámetros, diferentes a los que usaron los instructores, para `LinearRegression`, para luego probar con otros modelos de `sklearn`. Por ende por eso comenzaremos por el desafío 2.
+
+Miremos el mapa de calor de `datos_ml` para elegir los parámetros que usaré para mis modelos,
+
+```python
+plt.figure(figsize=(18, 8))
+
+heatmap = sns.heatmap(datos_ml.corr(), vmin=-1, vmax=1, annot=True, cmap='BrBG')
+heatmap.set_title('Correlación de las variables', fontdict={'fontsize':18}, pad=16)
+
+```
+
+![heatplot de los profes](docs/assets/f1-4.png)
+
+Lo que me interesa ver en este mapa de calor, es la columna correspondiente a `Precio_Millon` y su correlación con los demás parámetros. Es bastante notorio que el parámetro con el que no guarda mucha correlación es con 'Area'.
+
+#### Primer experimento
+
+Para este primer experimento usaré casi todos los parámetros que aparecen en el mapa de calor. Excluiré 'Area', por su baja correlación, y a `Precio_por_m`, ya que es el promedio que se descartó anteriormente,
+
+```python
+parametros = ['Habitaciones', 'Banios', 'Valor_m2_barrio', 'CONJUNTO_CERRADO',
+              'INSEGURIDAD', 'TERMINALES_BUS', 'BARES_DISCO', 'RUIDO',
+              'OSCURO_PELIGROSO', 'SALARIO_MES', 'TIENE_ESCRITURA', 'PERDIDA_TRABAJO_C19',
+              'PERDIDA_INGRESOS_C19', 'PLANES_ADQUIRIR_VIVIENDA', 'COD_UPZ_GRUPO', 'SALARIO_ANUAL_MI']
+
+```
+
+Ahora vamos a crear el modelo usando la función creada anteriormente
+
+```python
+experimento_1 = modelar(parametros, 'Precio_Millon')
+
+```
+
+![salida de modelar](docs/assets/f2-4.png)
+
+Un resultado ligeramente mejor que el obtenido por los instructores en clase. ¿Podrá mejorar?
+
+#### Segundo experimento
+
+Para este experimento vamos a arriesgarnos. Crearé una serie de modelos y las compararé entre sí para seleccionar un pequeño grupo de los mejores. ¿Qué conjuntos de parámetros usaré para esta prueba? Usaremos todas las combinaciones que se puedan forma de mi lista `parametros`.
+
+Usaremos para ello el concepto de *Conjunto Potencia* (Power Set en inglés); para revisar la definición revisa el articulo de Wikipedia [aquí](https://en.wikipedia.org/wiki/Power_set). Veamos el código para crear un conjunto potencia desde otro conjunto
+
+```python
+from itertools import chain, combinations
+def conjunto_potencia(lista):
+    salida = chain.from_iterable(combinations(lista, r) for r in range(len(lista)+1))
+    return salida
+
+```
+Con `conjunto_potencia` se creará un conjunto de conjuntos con todas las combinaciones posibles, tanto en tamaño como diferentes combinaciones de parámetros. Y, para nuestro caso, son muchas combinaciones
+
+```python
+len(list(conjunto_potencia(parametros)))
+
+out: 65536
+```
+Pero no vamos a crear 65536 modelos, sino que de ahí vamos a eliminar aquellos conjuntos con menos de 3 parámetros; quedan, entonces, 65399 modelos.
+
+La siguiente función realizará todas las pruebas:
+
+```python
+def pruebas(imprimir_salto = 100):
+  n = 1 #Indica el numero de experimento
+
+  experimento_2i = dict()
+  mensaje = 'e_2.'
+  para_dataframe = dict()
+
+  print(f'Realizando {len(list(conjunto_potencia(parametros)))} experimentos:')
+
+  for p in conjunto_potencia(parametros):
+
+    if len(p) < 3: # Quitamos los conjuntos que tengan menos de 3 elementos
+      continue
+
+    experimento_2i[mensaje + str(n)] = modelar(list(p), 'Precio_Millon', imprimir_mensaje = False)
+
+    aux = experimento_2i[mensaje + str(n)].copy()
+    aux.pop('modelo')
+    para_dataframe[mensaje + str(n)] = aux.copy()
+
+    experimento_2i[mensaje + str(n)]['parametros'] = p
+
+    if n % imprimir_salto == 0:
+      print('\tExperimento con nombre ' + mensaje + str(n))
+
+    n += 1
+
+  return experimento_2i, pd.DataFrame(para_dataframe).T
+
+```
+
+Tendrá dos salidas: una será un diccionario con claves `e_2. +` un numero asignado a cada experimento, y guardando en cada uno otro diccionario con la salida de `modelar` agregando el conjunto de entrenamiento que se usó.
+
+La segunda salida es un dataframe que tendrá las mediciones, $MAE$ y $R^2$, tanto para los datos de entrenamiento como para los datos de prueba.
+
+Comencemos a crear todos las pruebas:
+
+```python
+experimento_2, metrics_2 = pruebas(imprimir_salto = 1000)
+
+```
+
+![salida de pruebas](docs/assets/f3-4.png)
+
+con la salida es posible monitorear el trabajo; el tiempo de ejecución fue de poco más de 29 minutos.
+
+Demos un vistazo a `metrics_2`,
+```python
+metrics_2
+
+```
+![metrics_2](docs/assets/f4-4.png)
+
+Como índice posee el código de identificación para el experimento, y como parámetros las validaciones.
+
+Para realizar el filtro, usaré [scatterplot](https://seaborn.pydata.org/generated/seaborn.scatterplot.html) de Seaborn, para mirar la relación entre $MAE$ y $R^2$:
+
+**Datos de prueba**
+
+```python
+plt.figure(figsize = (10, 8))
+
+sns.scatterplot(data = metrics_2, x = 'r2_test', y = 'mae_test')
+
+plt.show()
+
+```
+
+![sccaterplot de datos de prueba](docs/assets/f5_1-4.png)
+
+**Datos de entrenamiento**
+
+```python
+plt.figure(figsize = (10, 8))
+
+sns.scatterplot(data = metrics_2, x = 'r2_train', y = 'mae_train')
+
+plt.show()
+
+
+```
+
+![sccaterplot de datos de entrenamiento](docs/assets/f5_2-4.png)
+
+Dadas las gráficas, haremos un primer filtro para los datos que cumplan con lo siguiente:
+* Test:
+    * $R^2 > 0.5$
+    * $MAE < 120$
+* Train
+    * $R^2 > 0.5$
+    * $MAE < 130$.
+
+Haremos un filtro tanto para los datos de prueba como para los de entrenamiento, y nos quedaremos con la intersección de ambos:
+
+```python
+mejores_test = metrics_2.query('r2_test > 0.50 & mae_test < 120')
+mejores_train = metrics_2.query('r2_train > 0.50 & mae_train < 130')
+
+print(f'len test {mejores_test.shape[0]} --- > len train {mejores_train.shape[0]}')
+
+mejores_metrics_2 = pd.merge(mejores_test, mejores_train, how = 'inner', on = list(mejores_test.columns))
+
+
+```
+y repetiremos el proceso, ahora comenzando con el *dataset* `mejores_metrics_2` en lugar de metrics.
+
+Dando un par de filtrados más, siendo bastante minucioso, llegué a un conjunto de 90 modelos que cumplen con las siguientes características:
+
+* Test:
+    * $R^2 > 0.5605$
+    * $MAE < 115.60$
+* Train
+    * $R^2 > 0.5435$
+    * $MAE < 120.60$.
+
+Donde el *dataset* que obtenemos es el siguiente
+
+```python
+    mejores_metrics_2
+```
+![visualización de mejores_metrics_2](docs/assets/f6-4.png)
+
+Realizamos un ordenamiento para comenzar con los mejores resultados
+
+```python
+mejores_metrics_2 = mejores_metrics_2.sort_values(by = ['r2_test', 'mae_test', 'r2_train', 'mae_train'], ascending = [False, True, False, True])
+mejores_metrics_2.index = range(len(mejores_metrics_2))
+mejores_metrics_2
+
+```
+
+![visualización de mejores_metrics_2 ordenado](docs/assets/f7-4.png)
+
+Y, para ahorrar espacio, desechamos los otros modelos que no están entre los 90 mejores, reescribiendo el diccionario `experimento_2`,
+
+```python
+aux = {cod : experimento_2[cod] for cod in mejores_metrics_2.prueba}
+experimento_2 = aux
+```
+
+Hasta ahora ya están hechos los modelos, para más adelante probarlos con datos reales. Pero antes de terminar este desafío, hagamos un análisis del dataset `mejores_metrics_2`.
+
+Primero crearemos un *dataframe*, usando los parametros que combinamos como columnas, donde, por cada modelo, marque 1 si lo incluye, o 0 si no.
+
+```python
+for exp in analisis_mejores_parametros.index:
+  for param in parametros:
+    analisis_mejores_parametros.loc[exp, param] = int(param in conjuntos_parametros[exp])
+
+analisis_mejores_parametros
+
+```
+
+![fragmento de dataframe de inclusión](docs/assets/f8-4.png)
+
+Creamos una columna con el total de parametros por modelo,
+
+```python
+analisis_mejores_parametros['Total_parametros'] = analisis_mejores_parametros.sum(axis = 1).astype('int')
+analisis_mejores_parametros['Total_parametros']
+
+```
+![El número de parametros usados en cada modelo](docs/assets/f9-4.png)
+
+Y por último, veamos cuantas veces se usó cada parámetro dentro de los 90 mejores,
+
+```python
+analisis_mejores_parametros.sum().sort_values()
+
+```
+
+![Cantidad de veces que aparecen los parámetros en los 90 modelos mejores](docs/assets/f10-4.png)
+
+Es curioso observar que `TERMINALES_BUS` no aparece en ninguno de los modelos usando. Además, hay algunos otros que aparecen alrededor del 50% de los modelos.
+
+No obstante, los parámetros de `COD_UPZ_GRUPO`, `OSCURO_PELIGROSO`, `BARES_DISCO`, `INSEGURIDAD`, `CONJUNTO_CERRADO`, `Valor_m2_barrio`, `Banios` y `RUIDO` aparecen en los 90. Por lo que se puede decir que no tenemos modelos entrenados con menos de 8 parámetros.
