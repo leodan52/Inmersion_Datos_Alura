@@ -14,8 +14,8 @@
     * [Desafío 2](#desafío-2-2)
 * [Aula 04](#aula-04-cruzando-bases-y-machine-learning)
     * [Marco teórico](#marco-teórico)
-    * [Desafío 1](#desafío-1-3)
     * [Desafío 2](#desafío-2-3)
+    * [Desafío 1](#desafío-1-3)
 
 ## Introducción
 
